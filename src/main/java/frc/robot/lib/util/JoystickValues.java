@@ -1,4 +1,4 @@
-package frc.robot.lib;
+package frc.robot.lib.util;
 
 public class JoystickValues {
     
