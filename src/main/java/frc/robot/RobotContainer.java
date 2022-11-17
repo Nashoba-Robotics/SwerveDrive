@@ -27,7 +27,6 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-    SmartDashboard.putData(new SingleSwerveDriveCommand());
     SmartDashboard.putData(new SwerveTestCommand());
     SmartDashboard.putData(new ToZeroCommand());
     SmartDashboard.putData(new ConfigOffsetCommand());

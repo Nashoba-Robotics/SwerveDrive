@@ -53,7 +53,7 @@ public class TestSwerveModule {
 
     private static TestSwerveModule singleton;
     public static TestSwerveModule getInstance(){
-        if(singleton == null) singleton = new TestSwerveModule(4,Constants.SwerveBase.frontRightTurnPort, Constants.SwerveBase.frontRightSensorPort, Constants.SwerveBase.frontRightOffset);
+        if(singleton == null) singleton = new TestSwerveModule(4,Constants.SwerveBase.backLeftTurnPort, Constants.SwerveBase.backLeftSensorPort, Constants.SwerveBase.backLeftOffset);
         return singleton;
     }
 
@@ -240,15 +240,16 @@ public class TestSwerveModule {
     //Hopefully this works...
     //It didn't, but it seems like it might
     public void jank(double turn, double lastTurn){
-        double angle = findLowestAngle(turn, lastTurn);
+        double angle = fixedLowestAngle(turn, lastTurn);
         angle = degToNU(angle);
 
+        turn = degToNU(turn);
         lastTurn = degToNU(lastTurn);
 
         //Reset the motor position so we will never see continuity issues
         turnMotor.setSelectedSensorPosition(0);
 
-        turnMotor.set(ControlMode.MotionMagic, angle);
+        turnMotor.set(ControlMode.MotionMagic, angle-lastTurn);
 
         turnMotor.setSelectedSensorPosition(NUToDeg(angle));
         /*

@@ -26,8 +26,8 @@ public class SwerveTestCommand extends CommandBase{
             //TestSwerveModule.getInstance().optimizeSet(0, turn, lastTurn);
             //TestSwerveModule.getInstance().setPos(turn, lastTurn);
             //TestSwerveModule.getInstance().dumbSet(turn);
-            //TestSwerveModule.getInstance().testSet(turn, lastTurn);
-            TestSwerveModule.getInstance().jank(turn, lastTurn);
+            TestSwerveModule.getInstance().testSet(turn, lastTurn);
+            //TestSwerveModule.getInstance().jank(turn, lastTurn);
             //SmartDashboard.putNumber("Target", TestSwerveModule.getInstance().fixedLowestAngle(turn, lastTurn));
         }
         // lastTurn = TestSwerveModule.getInstance().findLowestAngle(turn, lastTurn);

@@ -6,6 +6,8 @@ import frc.robot.subsystems.TestSwerveModule;
 
 public class ContinuityTestCommand extends CommandBase{
     double lt = 0;
+    double lastTurn = 0;
+
     @Override
     public void initialize() {
         //TestSwerveModule.getInstance().jank(30, 0);
@@ -16,12 +18,18 @@ public class ContinuityTestCommand extends CommandBase{
     @Override
     public void execute() {
         double turn = SmartDashboard.getNumber("t", 0);
-        double lastTurn = SmartDashboard.getNumber("lt", 0);
+        //lastTurn = SmartDashboard.getNumber("lt", 0);
 
-        if(lt != turn){
+        //if(lt != turn){
+        //     TestSwerveModule.getInstance().jank(turn, lastTurn);
+        // }
+        // lt = turn;
+
+        if(lastTurn != turn){
             TestSwerveModule.getInstance().jank(turn, lastTurn);
         }
-        lt = turn;
+
+        lastTurn = turn;
     }
 
     @Override
