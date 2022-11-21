@@ -53,7 +53,7 @@ public class TestSwerveModule {
 
     private static TestSwerveModule singleton;
     public static TestSwerveModule getInstance(){
-        if(singleton == null) singleton = new TestSwerveModule(4,Constants.SwerveBase.backLeftTurnPort, Constants.SwerveBase.backLeftSensorPort, Constants.SwerveBase.backLeftOffset);
+        if(singleton == null) singleton = new TestSwerveModule(Constants.SwerveBase.backLeftMovePort,Constants.SwerveBase.backLeftTurnPort, Constants.SwerveBase.backLeftSensorPort, Constants.SwerveBase.backLeftOffset);
         return singleton;
     }
 
@@ -237,8 +237,8 @@ public class TestSwerveModule {
         turnMotor.setSelectedSensorPosition(NUToDeg(turn));
     }
 
-    //Hopefully this works...
-    //It didn't, but it seems like it might
+    // TODO: Only use jank when it is necessary to get past a continuity error.
+    //      Or check to see if it always works. Will there every be any sort of problem?
     public void jank(double turn, double lastTurn){
         double angle = fixedLowestAngle(turn, lastTurn);
         angle = degToNU(angle);
@@ -251,11 +251,22 @@ public class TestSwerveModule {
 
         turnMotor.set(ControlMode.MotionMagic, angle-lastTurn);
 
-        turnMotor.setSelectedSensorPosition(NUToDeg(angle));
+        //turnMotor.setSelectedSensorPosition(NUToDeg(angle));
+        turnMotor.setSelectedSensorPosition(NUToDeg(turnSensor.getAbsolutePosition()));
         /*
             This method doesn't really account for error
             Maybe reading the angle from the CANcoder directly might be a bit better
             (Change later)
         */
+    }
+
+    public void jank(double turn){
+        double lastTurn = NUToDeg(turnSensor.getAbsolutePosition());
+        jank(turn, lastTurn);
+    }
+
+    //TODO: Implement
+    public boolean isContinuityBreak(double turn, double lastTurn){
+        return false;
     }
 }

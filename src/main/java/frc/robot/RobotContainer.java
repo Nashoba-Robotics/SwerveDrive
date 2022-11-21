@@ -7,13 +7,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.ConfigOffsetCommand;
-import frc.robot.commands.ContinuityTestCommand;
-import frc.robot.commands.JoystickTurnCommand;
-import frc.robot.commands.SingleSwerveDriveCommand;
-import frc.robot.commands.SwerveDriveCommand;
-import frc.robot.commands.SwerveTestCommand;
-import frc.robot.commands.ToZeroCommand;
+
+import frc.robot.commands.*;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -28,11 +24,8 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     SmartDashboard.putData(new SwerveTestCommand());
-    SmartDashboard.putData(new ToZeroCommand());
-    SmartDashboard.putData(new ConfigOffsetCommand());
-    SmartDashboard.putData(new JoystickTurnCommand());
-    SmartDashboard.putData(new SwerveDriveCommand());
     SmartDashboard.putData(new ContinuityTestCommand());
+    SmartDashboard.putData(new CircleSpinCommand());
   }
 
   /**
