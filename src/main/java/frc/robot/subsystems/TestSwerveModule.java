@@ -161,12 +161,12 @@ public class TestSwerveModule {
         }
         else desiredAngle = potAngles[1];
 
-        double distance = Math.min(originalDistance, oppositeDistance);
-        if(Math.signum(turn) != Math.signum(lastTurn)){
-            if(Math.abs(turn) > 90 && Math.abs(lastTurn) > 90){
-                desiredAngle = lastTurn + Math.signum(lastTurn)*distance;
-            }
-        }
+        // double distance = Math.min(originalDistance, oppositeDistance);
+        // if(Math.signum(turn) != Math.signum(lastTurn)){
+        //     if(Math.abs(turn) > 90 && Math.abs(lastTurn) > 90){
+        //         desiredAngle = lastTurn + Math.signum(lastTurn)*distance;
+        //     }
+        // }
         return desiredAngle;
     }
 
@@ -265,8 +265,9 @@ public class TestSwerveModule {
         jank(turn, lastTurn);
     }
 
-    //TODO: Implement
     public boolean isContinuityBreak(double turn, double lastTurn){
-        return false;
+        if(Math.signum(turn) == Math.signum(lastTurn)) return false;
+        if(Math.abs(turn) < 90 && Math.abs(lastTurn) < 90) return false;    //Not sure if this statement is correct
+        return true;
     }
 }

@@ -10,7 +10,7 @@ public class CircleSpinCommand extends CommandBase{
     Timer timer;
     int lastTurn;
     int rps = 5;    //Rotations per loop
-    double loopTime = 0.5;  //How long is it going to take to increase the rotation by rps
+    double loopTime = 0.1;  //How long is it going to take to increase the rotation by rps
 
     @Override
     public void initialize() {
@@ -23,6 +23,7 @@ public class CircleSpinCommand extends CommandBase{
     @Override
     public void execute() {
        TestSwerveModule.getInstance().jank(turn-180, lastTurn);
+       //TestSwerveModule.getInstance().optimizeSet(0,turn-180, lastTurn);
        if(timer.get() > 0.5){
             lastTurn = turn-180;
             turn += rps;
