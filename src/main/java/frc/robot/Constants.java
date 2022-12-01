@@ -20,6 +20,8 @@ public final class Constants {
         public static final double length = .548;
         public static final double hDiagonal = Math.sqrt(width*width + length*length)/2;
 
+        public static final double GEARRATIO = 150./7;
+
         public static final int frontRightTurnPort = 0;
         public static final int frontLeftTurnPort = 1;
         public static final int backLeftTurnPort = 2;
