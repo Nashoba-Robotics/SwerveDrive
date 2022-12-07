@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
@@ -8,6 +9,7 @@ import frc.robot.lib.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.lib.util.SwerveState;
 
+//
 //NOTE: These are all in degrees -> Need to convert to radians
 public class SwerveModule extends SubsystemBase{
     private TalonFX moveMotor, turnMotor;
@@ -23,6 +25,27 @@ public class SwerveModule extends SubsystemBase{
         this.offset = offset;
 
         moveMultiplier = 1;
+        
+        //Testing
+        turnMotor.setInverted(InvertType.InvertMotorOutput);
+    }
+
+    public void zero(){
+        resetMotorPos();
+        set(0, 0);
+    }
+
+    public void resetMotorPos(){
+        turnSensor.configMagnetOffset(-offset);
+        turnMotor.setSelectedSensorPosition(Units.degToNU(turnSensor.getAbsolutePosition()));
+    }
+
+    public double getMotorPos(){
+        return turnMotor.getSelectedSensorPosition();
+    }
+
+    public double getSensorPos(){
+        return turnSensor.getAbsolutePosition();
     }
 
     // Takes in a SwerveState(move and turn) and moves the module correspondingly

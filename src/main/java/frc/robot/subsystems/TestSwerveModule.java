@@ -53,7 +53,9 @@ public class TestSwerveModule {
 
     private static TestSwerveModule singleton;
     public static TestSwerveModule getInstance(){
-        if(singleton == null) singleton = new TestSwerveModule(Constants.SwerveBase.backLeftMovePort,Constants.SwerveBase.backLeftTurnPort, Constants.SwerveBase.backLeftSensorPort, Constants.SwerveBase.backLeftOffset);
+        if(singleton == null)
+         singleton = new TestSwerveModule(Constants.SwerveBase.frontLeftMovePort,Constants.SwerveBase.frontLeftTurnPort, Constants.SwerveBase.frontLeftSensorPort, Constants.SwerveBase.frontLeftOffset);
+         //singleton = new TestSwerveModule(Constants.SwerveBase.frontRightMovePort,Constants.SwerveBase.frontRightTurnPort, Constants.SwerveBase.frontRightSensorPort, Constants.SwerveBase.frontLeftOffset);
         return singleton;
     }
 
