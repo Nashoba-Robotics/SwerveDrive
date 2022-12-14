@@ -12,6 +12,7 @@ import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.lib.util.SwerveState;
+import frc.robot.lib.util.Units;
 
 public class TestSwerveModule {
     TalonFX turnMotor;
@@ -54,8 +55,8 @@ public class TestSwerveModule {
     private static TestSwerveModule singleton;
     public static TestSwerveModule getInstance(){
         if(singleton == null)
-         singleton = new TestSwerveModule(Constants.SwerveBase.frontLeftMovePort,Constants.SwerveBase.frontLeftTurnPort, Constants.SwerveBase.frontLeftSensorPort, Constants.SwerveBase.frontLeftOffset);
-         //singleton = new TestSwerveModule(Constants.SwerveBase.frontRightMovePort,Constants.SwerveBase.frontRightTurnPort, Constants.SwerveBase.frontRightSensorPort, Constants.SwerveBase.frontLeftOffset);
+         //singleton = new TestSwerveModule(Constants.SwerveBase.frontLeftMovePort,Constants.SwerveBase.frontLeftTurnPort, Constants.SwerveBase.frontLeftSensorPort, Constants.SwerveBase.frontLeftOffset);
+         singleton = new TestSwerveModule(Constants.SwerveBase.frontRightMovePort,Constants.SwerveBase.frontRightTurnPort, Constants.SwerveBase.frontRightSensorPort, Constants.SwerveBase.frontLeftOffset);
         return singleton;
     }
 
@@ -74,8 +75,12 @@ public class TestSwerveModule {
         }
     }
 
+    public double getMotorPos(){
+        return turnMotor.getSelectedSensorPosition();
+    }
+
     public double getTurnPos(){
-        double motorPos = turnMotor.getSelectedSensorPosition();
+        double motorPos = getMotorPos();
         return Math.signum(motorPos)*Math.abs(motorPos)%(2048.*150/7);
     }
 
@@ -120,8 +125,41 @@ public class TestSwerveModule {
         moveMotor.set(ControlMode.PercentOutput, move * moveMultiplier);
     }
 
-    public void testSet(double turn, double lastTurn){
-        turnMotor.set(ControlMode.MotionMagic, degToNU(findLowestAngle(turn, lastTurn)));
+    //Takes input in degrees
+    // Read in the current motor angle/pos & add/subtract needed NU to get to desired position
+    public void testSet(double turn){
+        double currentPos =  turnMotor.getSelectedSensorPosition();
+        double lastTurn = NUToDeg(currentPos);
+
+        double angle = fixedLowestAngle(turn, lastTurn);
+        double angleChange = findAngleChange(angle, lastTurn);
+        // if(Math.abs(angleChange) > 180){
+        //     double dist = findDistance(turn, lastTurn);
+        //     angleChange = Math.signum(turn-lastTurn)*dist;
+        // } 
+
+        double nextPos = currentPos + Units.degToNU(angleChange);
+        turnMotor.set(ControlMode.MotionMagic, nextPos);
+    }
+
+    //Will probably annex into the findDistance function later
+    public double findAngleChange(double turn, double lastTurn){
+        double distance = turn - lastTurn;
+        //double sign = Math.signum(distance);   //Either 1 or -1 -> represents positive or negative
+
+        if(Math.abs(turn - (lastTurn + 360)) < Math.abs(distance)){
+            // If this is true, it means that lastTurn is in the negatives and is trying to reach a positive, meaning that it must move positive
+            distance = turn - (lastTurn + 360);
+            //sign = +1;
+        }
+
+        if(Math.abs(turn+360 - (lastTurn)) < Math.abs(distance)){
+            // If this is true, it means that turn is in the negatives and lastTurn is trying to reach a negative, meaning that you must move negative 
+            distance = turn+360 - lastTurn;
+            //sign = -1;
+        }
+
+        return distance;
     }
 
     //TODO: lastTurn = 170 & turn = -170
@@ -163,12 +201,6 @@ public class TestSwerveModule {
         }
         else desiredAngle = potAngles[1];
 
-        // double distance = Math.min(originalDistance, oppositeDistance);
-        // if(Math.signum(turn) != Math.signum(lastTurn)){
-        //     if(Math.abs(turn) > 90 && Math.abs(lastTurn) > 90){
-        //         desiredAngle = lastTurn + Math.signum(lastTurn)*distance;
-        //     }
-        // }
         return desiredAngle;
     }
 

@@ -23,9 +23,9 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-    //SmartDashboard.putData(new SwerveTestCommand());
+    SmartDashboard.putData(new SwerveTestCommand());
     //SmartDashboard.putData(new ContinuityTestCommand());
-    SmartDashboard.putData(new CircleSpinCommand());
+    //SmartDashboard.putData(new CircleSpinCommand());
     SmartDashboard.putData(new OffsetTestCommand());
   }
 

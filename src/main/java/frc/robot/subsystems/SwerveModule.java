@@ -16,7 +16,7 @@ public class SwerveModule extends SubsystemBase{
     private CANCoder turnSensor;
     private double offset;
     private int moveMultiplier; //Will either be 1 or -1 to tell the move motor which direction it should go (Optimization purposes)
-
+    //I don't think move multiplier should be global
     public SwerveModule(int movePort, int turnPort, int sensorPort, double offset){
         moveMotor = new TalonFX(movePort);
         turnMotor = new TalonFX(turnPort);
@@ -55,7 +55,7 @@ public class SwerveModule extends SubsystemBase{
 
     //Takes in move and turn and sets module accordingly
     public void set(double move, double turn){
-        double lastTurn = turnMotor.getSelectedSensorPosition(); //The current position is technically the lastPosition before it turns
+        double lastTurn = Units.NUToDeg(turnMotor.getSelectedSensorPosition()); //The current position is technically the lastPosition before it turns
         //Might be better to use CanCoder instead of integrated motor sensor
 
         if(isContinuityBreak(turn, lastTurn)){  //If there is a continuity break, we can use a special version of our set function to get around it
@@ -63,7 +63,6 @@ public class SwerveModule extends SubsystemBase{
         }
         else{   //Otherwise, set it normally
             turnMotor.set(ControlMode.MotionMagic, Units.degToNU(findLowestAngle(turn, lastTurn)));
-            
         }
 
         moveMotor.set(ControlMode.Velocity, move * moveMultiplier);
@@ -121,11 +120,12 @@ public class SwerveModule extends SubsystemBase{
     
 
     public boolean isContinuityBreak(double turn, double lastTurn){
-        if(Math.signum(turn) == Math.signum(lastTurn)) return false;
+        if(Math.signum(turn) == Math.signum(lastTurn) || turn == 0 || lastTurn == 0) return false;
         if(Math.abs(turn) <= 90 && Math.abs(lastTurn) <= 90) return false;    //Not sure if this statement is correct
         return true;
     }
 
+    //I don't think the motor is resetting correctly
     // A method to get past continuity breaks
     public void breakContinuity(double turn, double lastTurn){
         /*
