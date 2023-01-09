@@ -37,8 +37,8 @@ public final class Constants {
         public static final int backLeftSensorPort = 2;
         public static final int backRightSensorPort = 3;
         
-        public static final double frontRightOffset = -75.63;
-        public static final double frontLeftOffset = -43.066;
+        public static final double frontRightOffset = 77;
+        public static final double frontLeftOffset = 40;
         public static final double backLeftOffset = -121.318;
         public static final double backRightOffset = 96.68;
 

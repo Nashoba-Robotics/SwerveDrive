@@ -13,7 +13,7 @@ public class OffsetTestCommand extends CommandBase{
 
     @Override
     public void initialize() {
-        mod.zero(); //For some reason, keeps on spinning
+        mod.zero();
     }
 
     @Override

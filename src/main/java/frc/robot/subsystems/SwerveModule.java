@@ -9,6 +9,8 @@ import frc.robot.lib.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.lib.util.SwerveState;
 
+//Make algorithm to lock into increments of 90
+
 //
 //NOTE: These are all in degrees -> Need to convert to radians
 public class SwerveModule extends SubsystemBase{
@@ -54,18 +56,33 @@ public class SwerveModule extends SubsystemBase{
     }
 
     //Takes in move and turn and sets module accordingly
+    // public void set(double move, double turn){
+    //     double lastTurn = Units.NUToDeg(turnMotor.getSelectedSensorPosition()); //The current position is technically the lastPosition before it turns
+    //     //Might be better to use CanCoder instead of integrated motor sensor
+
+    //     if(isContinuityBreak(turn, lastTurn)){  //If there is a continuity break, we can use a special version of our set function to get around it
+    //         breakContinuity(turn, lastTurn);
+    //     }
+    //     else{   //Otherwise, set it normally
+    //         turnMotor.set(ControlMode.MotionMagic, Units.degToNU(findLowestAngle(turn, lastTurn)));
+    //     }
+
+    //     moveMotor.set(ControlMode.Velocity, move * moveMultiplier);
+    // }
+
     public void set(double move, double turn){
-        double lastTurn = Units.NUToDeg(turnMotor.getSelectedSensorPosition()); //The current position is technically the lastPosition before it turns
-        //Might be better to use CanCoder instead of integrated motor sensor
+        double currentPos =  turnMotor.getSelectedSensorPosition();
+        double lastTurn = Units.NUToDeg(currentPos);
 
-        if(isContinuityBreak(turn, lastTurn)){  //If there is a continuity break, we can use a special version of our set function to get around it
-            breakContinuity(turn, lastTurn);
-        }
-        else{   //Otherwise, set it normally
-            turnMotor.set(ControlMode.MotionMagic, Units.degToNU(findLowestAngle(turn, lastTurn)));
-        }
+        double angle = findLowestAngle(turn, lastTurn);
+        double angleChange = findAngleChange(angle, lastTurn);
+        // if(Math.abs(angleChange) > 180){
+        //     double dist = findDistance(turn, lastTurn);
+        //     angleChange = Math.signum(turn-lastTurn)*dist;
+        // } 
 
-        moveMotor.set(ControlMode.Velocity, move * moveMultiplier);
+        double nextPos = currentPos + Units.degToNU(angleChange);
+        turnMotor.set(ControlMode.MotionMagic, nextPos);
     }
 
     /*
@@ -90,6 +107,41 @@ public class SwerveModule extends SubsystemBase{
             moveMultiplier = -1;
             return potAngles[1];
         } 
+
+        /*
+         * double[]potAngles = potentialAngles(turn);
+
+        double originalDistance = findDistance(potAngles[0], lastTurn);
+
+        double oppositeDistance = findDistance(potAngles[1], lastTurn);
+
+        double desiredAngle = 0;
+        if(originalDistance <= oppositeDistance){
+            desiredAngle = potAngles[0];
+        }
+        else desiredAngle = potAngles[1];
+
+        return desiredAngle;
+         */
+    }
+
+    public double findAngleChange(double turn, double lastTurn){
+        double distance = turn - lastTurn;
+        //double sign = Math.signum(distance);   //Either 1 or -1 -> represents positive or negative
+
+        if(Math.abs(turn - (lastTurn + 360)) < Math.abs(distance)){
+            // If this is true, it means that lastTurn is in the negatives and is trying to reach a positive, meaning that it must move positive
+            distance = turn - (lastTurn + 360);
+            //sign = +1;
+        }
+
+        if(Math.abs(turn+360 - (lastTurn)) < Math.abs(distance)){
+            // If this is true, it means that turn is in the negatives and lastTurn is trying to reach a negative, meaning that you must move negative 
+            distance = turn+360 - lastTurn;
+            //sign = -1;
+        }
+
+        return distance;
     }
 
     // Find the two angles we could potentially go to

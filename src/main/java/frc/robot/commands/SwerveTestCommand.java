@@ -41,12 +41,13 @@ public class SwerveTestCommand extends CommandBase{
         turn = SmartDashboard.getNumber("Turny", 0);
         lastTurn = SmartDashboard.getNumber("Last Turn", 0);
 
-        double currentPos = TestSwerveModule.getInstance().fixedLowestAngle(turn, Units.NUToDeg(TestSwerveModule.getInstance().getMotorPos()));
+        //double currentPos = TestSwerveModule.getInstance().fixedLowestAngle(turn, Units.NUToDeg(TestSwerveModule.getInstance().getMotorPos()));
+        double currentPos = mod.findLowestAngle(turn, Units.NUToDeg(mod.getMotorPos()));
         SmartDashboard.putNumber("Desired Angle", currentPos);
         SmartDashboard.putNumber("Current Pos", currentPos);
 
-        //mod.set(0, turn);
-        TestSwerveModule.getInstance().testSet(turn);
+        mod.set(0, turn);
+        //TestSwerveModule.getInstance().testSet(turn);
 
         if(turn != lastTurn){ 
             //TestSwerveModule.getInstance().optimizeSet(0, turn, lastTurn);
