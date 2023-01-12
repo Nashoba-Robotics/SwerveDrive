@@ -103,14 +103,6 @@ public class SwerveModule extends SubsystemBase{
         
         double nextPos = currentPos + Units.degToNU(angleChange);
 
-        //Check if nextPos is close to 0, 90, 180, or 270 deg
-        double newAngle = Units.NUToDeg(nextPos);
-        double threshold = 10;
-        if(newAngle%90 < threshold){
-            //Put the nextPos closest to a multiple of 90
-            newAngle = ((int)newAngle / 90)*90;
-            nextPos = Units.degToNU(newAngle);
-        }
         turnMotor.set(ControlMode.MotionMagic, nextPos);
     }
 
