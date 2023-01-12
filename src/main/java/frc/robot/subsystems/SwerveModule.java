@@ -6,6 +6,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 
 import frc.robot.lib.util.Units;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.lib.util.SwerveState;
 
@@ -55,6 +57,24 @@ public class SwerveModule extends SubsystemBase{
         set(state.move, state.turn);
     }
 
+    public SwerveModuleState getState(){
+        //Speed(mps), angle (Rotation2D(degrees))
+        SwerveModuleState state = new SwerveModuleState(
+            toMPS(moveMotor.getSelectedSensorVelocity()),
+            new Rotation2d(Units.NUToDeg(turnMotor.getSelectedSensorPosition()) * Math.PI/180)   //radians
+        );
+        return state;
+    }
+
+    //Converts from NU/100ms
+    public double toMPS(double speed){
+        double wheelCircumference = 0;
+        speed = speed/4096*wheelCircumference;
+        speed /= 10;
+        return speed;
+
+    }
+
     //Takes in move and turn and sets module accordingly
     // public void set(double move, double turn){
     //     double lastTurn = Units.NUToDeg(turnMotor.getSelectedSensorPosition()); //The current position is technically the lastPosition before it turns
@@ -80,8 +100,17 @@ public class SwerveModule extends SubsystemBase{
         //     double dist = findDistance(turn, lastTurn);
         //     angleChange = Math.signum(turn-lastTurn)*dist;
         // } 
-
+        
         double nextPos = currentPos + Units.degToNU(angleChange);
+
+        //Check if nextPos is close to 0, 90, 180, or 270 deg
+        double newAngle = Units.NUToDeg(nextPos);
+        double threshold = 10;
+        if(newAngle%90 < threshold){
+            //Put the nextPos closest to a multiple of 90
+            newAngle = ((int)newAngle / 90)*90;
+            nextPos = Units.degToNU(newAngle);
+        }
         turnMotor.set(ControlMode.MotionMagic, nextPos);
     }
 
